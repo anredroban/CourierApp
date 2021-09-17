@@ -41,7 +41,8 @@
   margin-top: 120px;
   max-width: 600px;
   height: 320px;
-  border: 1px solid #b3aaaa;
+  border: 1px solid;
+  border-radius: 15px;
   background-color: #f8f8f8;
 }
 #login .container #login-row #login-column #login-box #login-form {
