@@ -35,6 +35,7 @@ class GestionController extends Controller
         ->leftjoin('users', 'users.id', '=', 'tramites.usuario_id')
         ->select('tramites.*','tramites.fecha_gestion_courier as Tfecha_gestion', 'estados.nombre as estadoNombre', 'sub_estados.nombre as subestadoNombre','users.name as usuario','subsub_estados.nombre as subsubestadoNombre')
         ->where('tramites.is_active','=',true)
+        ->take(1000)
         ->get();
 
         //$infor['data']=Asignacion::where('is_active','=',true)->get();
