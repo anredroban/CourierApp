@@ -34,7 +34,7 @@
         body {
   margin: 0;
   padding: 0;
-  background-color: #c3cccc;
+  background-color: #f8f9f9;
   height: 100vh;
 }
 #login .container #login-row #login-column #login-box {
