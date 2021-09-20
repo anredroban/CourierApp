@@ -259,7 +259,7 @@
                    var $select = $('#subestado');
                       $.each(data, function(id, name) {
                         //if(name.id!= 11 && name.id!= 13){
-                          if(name.id!= 12 && name.id!= 13 ){
+                          if(name.id!= 12){
                         $select.append('<option value=' + name.id + '>' + name.nombre + '</option>');
                       }
                       });
