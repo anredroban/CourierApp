@@ -101,8 +101,17 @@ class BaseCarga implements ToModel,WithHeadingRow
             'cierre_de_ciclo'  =>$row['cierre_de_ciclo'],
             'guia_courier'  =>$row['guia_courier'],
             'cedula_titular'  =>$row['cedula_titular'],
-           
 
+            'campo1'  =>$row['campo1'],
+            'campo2'  =>$row['campo2'],
+            'campo3'  =>$row['campo3'],
+            'campo4'  =>$row['campo4'],
+            'campo5'  =>$row['campo5'],
+            'campo6'  =>$row['campo6'],
+            'campo7'  =>$row['campo7'],
+            'campo8'  =>$row['campo8'],
+            'campo9'  =>$row['campo9'],
+            'campo10'  =>$row['campo10'],
         ]);
         /*return new Tramites([
             'id'=>$row['id'],

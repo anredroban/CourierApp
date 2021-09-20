@@ -10,7 +10,6 @@
                 <div id="login-box" class="col-md-12">
                     <form method="POST"  id="login-form" class="form" action="{{ route('login') }}">
                         @csrf
-                    
                         <h3 class="text-center text-info"><a class="navbar-brand text-info" href="{{ route('homeCourier') }}">
                             <img src="../newTem/dist/img/favicon.png" alt="AdminLTE Logo" class="brand-image " style="opacity: .8">  COURIER
                         </a></h3>

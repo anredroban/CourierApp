@@ -32,25 +32,25 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         body {
-  margin: 0;
-  padding: 0;
-  background-color: #f8f9f9;
-  height: 100vh;
-}
-#login .container #login-row #login-column #login-box {
-  margin-top: 120px;
-  max-width: 600px;
-  height: 320px;
-  border: 1px solid;
-  border-radius: 15px;
-  background-color: #f8f8f8;
-}
-#login .container #login-row #login-column #login-box #login-form {
-  padding: 20px;
-}
-#login .container #login-row #login-column #login-box #login-form #register-link {
-  margin-top: -85px;
-}
+          margin: 0;
+          padding: 0;
+          background-color:#EBEBEB;
+          height: 100vh;
+        }
+        #login .container #login-row #login-column #login-box {
+          margin-top: 120px;
+          max-width: 600px;
+          height: 320px;
+          border: 1px;
+          border-radius: 15px;
+          background-color:  #fdfefe;
+        }
+        #login .container #login-row #login-column #login-box #login-form {
+          padding: 20px;
+        }
+        #login .container #login-row #login-column #login-box #login-form #register-link {
+          margin-top: -85px;
+        }
     </style>
 </head>
 <body>
