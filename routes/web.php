@@ -11,6 +11,7 @@ use App\Http\Controllers\RolController;
 use App\Http\Controllers\SubsubEstadoController;
 
 use App\Http\Controllers\DropzoneController;
+use App\Http\controllers\ReportExcelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,8 +56,14 @@ Route::delete('/user/{id}', [UsuariosController::Class,'destroy']);
 Route::get('/userEdit/{user}', [UsuariosController::Class,'edit'])->name('userEdit');
 Route::put('/userEdit/{user}', [UsuariosController::Class,'update'])->name('userUpdate');
 
+
+//editar datos de usuarios
+Route::get('/userEditFrom/{user}', [UsuariosController::Class,'editUser'])->name('userEditForm');
+Route::put('/userEditFrom/{user}', [UsuariosController::Class,'updateUser'])->name('userEditFormUpdate');
+
 //Gestion
 Route::post('/guardarGestionGeneral',[TramitesController::class,'update']);
+Route::post('/guardarGestionVisador',[TramitesController::class,'updateVisador']);
 Route::post('/guardarGestion',[TramitesController::class,'updateMotorizado']);
 
 //GestionAsignarBase
@@ -76,6 +83,8 @@ Route::get('/registroMotorizado',[GestionController::class,'homeMotorizado'])->n
 Route::get('/indexDistribucion',[GestionController::class,'indexDistribucion'])->name('indexDistribucion');
 Route::post('/guardarGestionArribo',[TramitesController::class,'updateDistribucion']);
 
+//indexVisador
+Route::get('/indexVisador',[GestionController::class,'indexVisador'])->name('indexVisador');
 
 //Registro Codigo
 Route::get('/gestion',[GestionController::class,'index'])->name('listadoCodigos');
@@ -112,5 +121,19 @@ Route::get('dropzone/delete', [DropzoneController::class,'delete'])->name('dropz
 //historico
 Route::get('historico', [HistorialController::class,'index'])->name('indexHistorico');
 Route::get('historico/buscar', [HistorialController::class,'buscar'])->name('historico.buscar');
+
+//reporte Imprimir Motorizado
+Route::get('/impresion', [ReportExcelController::class, 'index'])->name('impresion.index');
+Route::get('/impresion/pdf', [ReportExcelController::class, 'createPDF'])->name('impresion.pdf');
+Route::get('/impresion/{id}', [ReportExcelController::Class,'edit'])->name('impresion');
+// Route::delete('/eliminarUserGuia/{id}', [ReportExcelController::Class,'destroy']);
+
+//listar registros de gestion
+Route::get('/litaGestion', [GestionController::class, 'indexAsignarListado'])->name('asignado.index');
+Route::get('/litaGestion/{tramite}', [TramitesController::Class,'editTramite'])->name('tramiteEdit');
+
+//gestion de vista para estado bodega
+Route::get('/registroBodega',[GestionController::class,'homeBodega'])->name('bodega.index');
+Route::post('/guardarGestionBodega',[TramitesController::class,'updateBodega']);
 
 }); 

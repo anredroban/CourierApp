@@ -70,6 +70,7 @@ class AsignacionController extends Controller
             $path = $request->file('file')->getRealPath();            
              //Excel::import(new BaseCarga,  $request->file);                
             //$data= (new HeadingRowImport)->toArray($request->file);
+            
             if (Excel::import(new BaseCarga,  $request->file)) {
                 $message= 'Carga de datos exitosa';
                 //return redirect('cargaBase')->with("message",$message);
@@ -80,7 +81,7 @@ class AsignacionController extends Controller
                 return redirect()->route('dbCarga')->with('message',$message);
             }
         }else{
-                $message= 'No se cargo la Base de Datos';
+                $message= 'Error en el archivo, No se cargo la Base de Datos';
                 return redirect()->route('dbCarga')->with('message',$message);
         }      
     }

@@ -158,7 +158,7 @@
                         <select name="provincia" class="form-control" id="provincia" >  
                           <option value="">SELECCIONE</option>
                           @foreach ($provincias as $provincia)
-                          <option value="{{$provincia->id}}">{{$provincia->provincia}}</option>
+                          <option value="{{$provincia->provincia}}">{{$provincia->provincia}}</option>
                           @endforeach                        
                         </select>                                                
                       </div>
@@ -173,8 +173,9 @@
                           <option value="GUAYAQUIL">GUAYAQUIL</option>
                           <option value="CUENCA">CUENCA</option>
                           <option value="SANTO DIMINGO">SANTO DIMINGO</option>
-                          <option value="SANTO DIMINGO">TUNGURAHUA</option>
-                          <option value="SANTO DIMINGO">MACHALA</option>
+                          <option value="TUNGURAHUA">TUNGURAHUA</option>
+                          <option value="MACHALA">MACHALA</option>
+                          <option value="IMBABURA">IMBABURA</option>
                         </select>                                                
                       </div>
                     </div>    
@@ -196,8 +197,20 @@
                         <input type="text" class="form-control" name="personaRecibir" id="personaRecibir">                                                
                       </div>
                     </div>  
+                     
                   </div>
-                  
+                  <div class="col-sm-4" id="DiventregaBanco" >
+                  <div class="form-group" >
+                    <label>Entregado a Banco?</label>
+                    <select name="estadoBanco" class="form-control" id="estadoBanco" >  
+                      <option value="">SELECCIONE</option>
+                     
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                                           
+                    </select>                                                
+                  </div>
+                </div>
                   <div class="row">
                     <div class="col-sm-8" >
                       <!-- select -->
@@ -238,6 +251,7 @@
       $("#Divagendamiento2").hide();
       $("#Divinventario").hide();
       $("#Divsalidaruta").hide();
+      $("#DiventregaBanco").hide();
 
       //
       
@@ -273,7 +287,8 @@
               inventario = ['2','3','9','10','12','13','14','15','16','23','27','28','33'];
               //estados habilitados
               agendamiento = ['2','3','6','7','11','16','25','26'];
-              ruta=['11','12']
+              ruta=['11','12'];
+              banco=['25'];
               //estados punto distribucion
               if(sub!=12){
                 $("#Divpdistribucion").show();
@@ -282,7 +297,13 @@
                 $("#pdistribucion").val('');
               }
               //estados punto distribucion inhabilitado
-             
+             if(banco.includes(sub)==true){
+              $("#DiventregaBanco").show();
+             }else{
+              $("#DiventregaBanco").hide();
+              $("#estadoBanco").val('');
+             }
+
               if((provincia.includes(sub))==true){
                 $("#Divprovincia").hide();
                 $("#provincia").val('');

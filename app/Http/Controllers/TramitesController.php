@@ -17,8 +17,12 @@ use Maatwebsite\Excel\Concerns\WithConditionalSheets;
 Use App\Exports\ReporteGestion;
 Use App\Http\Controllers\HistorialController;
 use App\Models\Estados;
+use App\Models\SubEstados;
+use App\Models\subsubEstado;
 use App\User;
 use App\Models\Provincia;
+use App\Models\UserGuia;
+Use App\Models\Asignacion;
 
 class TramitesController extends Controller
 {
@@ -39,7 +43,7 @@ class TramitesController extends Controller
     {
         $usuarios=User::where('rol','<>','1')->get();
         $provincias=Provincia::select('id','provincia')->where('is_active','=',true)->get();
-        $estados=Estados::where('is_active','=',true)->whereIn('id',[3,4,5])->get();
+        $estados=Estados::where('is_active','=',true)->whereIn('id',[4,5])->get();
         return view('administracion.gestion.asignar',compact('estados','usuarios','provincias'));
     }
 
@@ -107,7 +111,7 @@ class TramitesController extends Controller
        
        for ($i=0; $i < count($resultado); $i++) {
             
-            $ucliente['usuario_id']=Auth::user()->id; 
+            $ucliente['usuario_id']=Auth::user()->name; 
             $ucliente['subestado_id']=$request->subestado;
             $ucliente['subsubestado_id']=$request->subsubestado;
             $ucliente['estado_id']=$request->estado;
@@ -126,7 +130,98 @@ class TramitesController extends Controller
                 $ucliente['persona_recibir']=$request->personaRecibir;             
                 $ucliente['codigo_general']=$codigo_general; 
             }
+            $ucliente['estado_banco']=$request->estadoBanco;
+                        
+            $result=Tramites::where('numero_guia','=',$resultado[$i])->update($ucliente);
+            if($result){
+                $codigosActualizados++;
+                app('App\Http\Controllers\HistorialController')->nuevo($resultado[$i]);
+            }            
+        }
+        
+       // echo $codigo_general;
+        $message= 'Registros actualizados '.$codigosActualizados ;
+        return redirect()->route('registroGestion')->with('message',$message);        
+        
+    }
+
+    public function updateBodega(Request $request)
+    {
+        //return $request;
+        
+        $resultado=explode("\r\n",$request->codigos);
+        $codigo_general="";
+        //var_dump($resultado);
+        $codigo_general=$resultado[0].$resultado[count($resultado)-1];
+       $codigosActualizados=0;
+       
+       for ($i=0; $i < count($resultado); $i++) {
             
+            $ucliente['usuario_id']=Auth::user()->name; 
+            $ucliente['subestado_id']=$request->subestado;
+            $ucliente['subsubestado_id']=$request->subsubestado;
+            $ucliente['estado_id']=$request->estado;
+            $now = Carbon::now();
+            $ucliente['fecha_gestion_courier']=$now;
+            $ucliente['inventario']=$request->inventario;
+                if ($request->fechaAgendamiento!=null && ($request->subestado==6 || $request->subestado==7)){
+                    $ucliente['agendamiento']=$request->fechaAgendamiento.' '.$request->horaAgendamiento ;
+                    $ucliente['nueva_direccion']=$request->nueva_direccion;
+                }else{
+                    $ucliente['agendamiento']=null;                    
+                }
+               
+            $ucliente['provincia_ruta']=$request->provincia;
+            $ucliente['punto_distribucion']=$request->pdistribucion;
+            $ucliente['observaciones']=$request->observaciones; 
+                    
+            if($request->tracking!=null){
+                $ucliente['tracking']=$request->tracking;
+                $ucliente['persona_recibir']=$request->personaRecibir;             
+                $ucliente['codigo_general']=$codigo_general; 
+            }
+            $ucliente['estado_banco']=$request->estadoBanco;
+                        
+            $result=Tramites::where('numero_guia','=',$resultado[$i])->update($ucliente);
+            if($result){
+                $codigosActualizados++;
+                app('App\Http\Controllers\HistorialController')->nuevo($resultado[$i]);
+            }            
+        }
+        
+       // echo $codigo_general;
+        $message= 'Registros actualizados '.$codigosActualizados ;
+        return redirect()->route('bodega.index')->with('message',$message);        
+        
+    }
+
+    public function updateVisador(Request $request)
+    {
+        //return $request;
+        
+        $resultado=explode("\r\n",$request->codigos);
+        $codigo_general="";
+        //var_dump($resultado);
+        $codigo_general=$resultado[0].$resultado[count($resultado)-1];
+       $codigosActualizados=0;
+       
+       for ($i=0; $i < count($resultado); $i++) {
+            
+            $ucliente['usuario_id']=Auth::user()->name; 
+            $ucliente['subestado_id']=$request->subestado;
+            $ucliente['subsubestado_id']=$request->subsubestado;
+            $ucliente['estado_id']=$request->estado;
+            $now = Carbon::now();
+            $ucliente['fecha_gestion_courier']=$now;
+            $ucliente['inventario']=$request->inventario;
+                if ($request->fechaAgendamiento!=null){
+                    $ucliente['agendamiento']=$request->fechaAgendamiento.' '.$request->horaAgendamiento ;
+                }
+
+            $ucliente['provincia_ruta']=$request->provincia;
+            $ucliente['punto_distribucion']=$request->pdistribucion;
+            $ucliente['observaciones']=$request->observaciones;         
+ 
             
             $result=Tramites::where('numero_guia','=',$resultado[$i])->update($ucliente);
             if($result){
@@ -138,7 +233,7 @@ class TramitesController extends Controller
         
        // echo $codigo_general;
         $message= 'Registros actualizados '.$codigosActualizados ;
-        return redirect()->route('registroGestion')->with('message',$message);        
+        return redirect()->route('indexVisador')->with('message',$message);        
         
     }
 
@@ -158,7 +253,7 @@ class TramitesController extends Controller
             $i++;
         }
         if(count($request->file('Documento'))==$i){
-            $ucliente['usuario_id']=Auth::user()->id; 
+            $ucliente['usuario_id']=Auth::user()->name; 
             $ucliente['subestado_id']=$request->subestado;
             $ucliente['subsubestado_id']=$request->subsubestado;
             $ucliente['estado_id']=$request->estado;
@@ -204,7 +299,7 @@ class TramitesController extends Controller
         }
         if(count($request->file('Documento'))==$i){
 
-            $ucliente['usuario_id']=Auth::user()->id; 
+            $ucliente['usuario_id']=Auth::user()->name; 
             $ucliente['subestado_id']=$request->subestado;
             
             $ucliente['estado_id']=$request->estado;
@@ -248,7 +343,7 @@ class TramitesController extends Controller
 
                 //-------------------------------------------------------------------
                 //Update Segundo Estado
-                $ucliente1['usuario_id']=Auth::user()->id; 
+                $ucliente1['usuario_id']=Auth::user()->name; 
                 if($request->validadorEstados=="BODEGA"){
                 $ucliente1['estado_id']=2;
                 $ucliente1['subestado_id']=10;
@@ -264,14 +359,14 @@ class TramitesController extends Controller
                     $ucliente1['agendamiento']=$request->fechaAgendamiento.' '.$request->horaAgendamiento ;
                 }
 
-            $ucliente1['provincia_ruta']=$request->provincia;
-            $ucliente1['punto_distribucion']=$request->pdistribucion;
-            $ucliente1['observaciones']=$request->observaciones; 
-            $ucliente1['codigo_general']=$request->balija;
-            if($request->tracking!=null){
-                $ucliente1['tracking']=$request->tracking;
-                $ucliente1['persona_recibir']=$request->personaRecibir;                             
-            }
+                $ucliente1['provincia_ruta']=$request->provincia;
+                $ucliente1['punto_distribucion']=$request->pdistribucion;
+                $ucliente1['observaciones']=$request->observaciones; 
+                $ucliente1['codigo_general']=$request->balija;
+                if($request->tracking!=null){
+                    $ucliente1['tracking']=$request->tracking;
+                    $ucliente1['persona_recibir']=$request->personaRecibir;                             
+                }
                         
             $result1=Tramites::where('codigo_general','=',$request->balija)->update($ucliente1);
             
@@ -310,6 +405,7 @@ class TramitesController extends Controller
              //Excel::import(new BaseCarga,  $request->file);                
           //  $data= (new HeadingRowImport)->toArray($request->file);
           //  return $data;
+          
             if (Excel::import(new BaseCarga,  $request->file)) {
                 $message= 'Carga de datos exitosa';
                 //return redirect('cargaBase')->with("message",$message);
@@ -326,107 +422,167 @@ class TramitesController extends Controller
     }
     public function bitacora(Request $request)
     {
+        $f1=$request->fecha1.' 00:00:00';
+        $f2=$request->fecha2.' 23:59:59';
        // $data['data']=DB::table('tramites')->select('id','nombre1','nombre2','apellido1','apellido2','estado_civil')->get();
-        $data['data'] = DB::table('tramites')
-                            ->leftjoin('estados', 'estados.id', '=', 'tramites.estado_id')
-                            ->leftjoin('sub_estados', 'sub_estados.id', '=', 'tramites.subestado_id')
-                            ->leftjoin('subsub_estados', 'subsub_estados.id', '=', 'tramites.subsubestado_id')
-                            ->leftjoin('users', 'users.id', '=', 'tramites.usuario_id')
+       //$data['data']=DB::select(DB::raw(" 
+       $data=DB::select(DB::raw(" 
+       SELECT tramites.id,tramites.tramite_id , tramites.numero_guia , tramites.numero_lote , 
+       tramites.nombre_cliente , tramites.estado , tramites.fecha_registro , tramites.ciclo , 
+       tramites.fecha_para_entrega , tramites.cedula_destinatario , tramites.nombre_destinatario , 
+       tramites.direccion_destinatario , tramites.ciudad_destino , tramites.telefono , 
+       tramites.id_tarjeta , tramites.fecha_entrega , tramites.recibido_por , tramites.fecha_excepcion , 
+       tramites.contenido , tramites.motivo_excepcion , tramites.mensajero_actual , tramites.cantidad , 
+       tramites.id_venta , tramites.cedula , tramites.nombres , tramites.apellidos , 
+       tramites.nombres_y_apellidos , tramites.provincia_domicilio , tramites.ciudad_domicilio , 
+       tramites.parroquia_domicilio , tramites.cll_p_domicilio , tramites.numeracion_domicilio , 
+       tramites.call_secundaria_domicilio , tramites.referencias_domicilio , tramites.direccion_completa_domicilio , 
+       tramites.provincia_trabajo , tramites.ciudad_trabajo , tramites.parroquia_trabajo , tramites.cll_p_trabajo , 
+       tramites.numeracion_trabajo , tramites.call_secundaria_trabajo , tramites.referencias_trabajo , 
+       tramites.direccion_completa_trabajo , tramites.telefono_contactado , tramites.telefono_referencia , 
+       tramites.telefono1 , tramites.telefono2 , tramites.telefono3 , tramites.telefono4 , tramites.telefono5 , 
+       tramites.telefono6 , tramites.telefono7 , tramites.telefono8 , tramites.telefono9 , tramites.telefono10 , 
+       tramites.id_cliente , tramites.fecha_gestion , tramites.creadas_no_creadas , tramites.imputable , 
+       tramites.detalle_imputable , tramites.fecha_envio_creacion , tramites.nombre_de_la_base , tramites.lote , 
+       tramites.codigo_campania , tramites.ciclo_courier , tramites.cierre_de_ciclo , tramites.guia_courier , 
+       tramites.cedula_titular , tramites.estado_id , tramites.subestado_id, tramites.subsubestado_id , 
+       tramites.usuario_id , tramites.fecha_gestion_courier as Tfecha_gestion,'' as localizacion from tramites where tramites.fecha_gestion_courier between '$f1' and '$f2'"));
+    /*   $data['data'] = DB::table('tramites')
+                            ->leftjoin('estados','tramites.estado_id' , '=', 'estados.id')
+                            ->leftjoin('sub_estados', 'tramites.subestado_id' , '=','sub_estados.id')
+                            ->leftjoin('subsub_estados', 'tramites.subsubestado_id' , '=','subsub_estados.id')
+                            ->leftjoin('users', 'tramites.usuario_id' , '=','users.id')
                             ->select('tramites.tramite_id','tramites.numero_guia','tramites.numero_lote','tramites.nombre_cliente','tramites.estado','tramites.fecha_registro'
                             ,'tramites.ciclo','tramites.fecha_para_entrega','tramites.cedula_destinatario','tramites.nombre_destinatario'
                             ,'tramites.direccion_destinatario','tramites.ciudad_destino','tramites.telefono','tramites.id_tarjeta','tramites.fecha_entrega','tramites.recibido_por'
                             ,'tramites.fecha_excepcion','tramites.contenido','tramites.motivo_excepcion','tramites.mensajero_actual','tramites.cantidad','tramites.id_venta'
                             ,'tramites.cedula',
-    'tramites.nombres'  ,
-    'tramites.apellidos'  ,
-    'tramites.nombres_y_apellidos'  ,
-    'tramites.provincia_domicilio'  ,
-    'tramites.ciudad_domicilio'  ,
-    'tramites.parroquia_domicilio'  ,
-    'tramites.cll_p_domicilio'  ,
-    'tramites.numeracion_domicilio'  ,
-    'tramites.call_secundaria_domicilio'  ,
-    'tramites.referencias_domicilio'  ,
-    'tramites.direccion_completa_domicilio'  ,
-    'tramites.provincia_trabajo'  ,
-    'tramites.ciudad_trabajo'  ,
-    'tramites.parroquia_trabajo'  ,
-    'tramites.cll_p_trabajo'  ,
-    'tramites.numeracion_trabajo'  ,
-    'tramites.call_secundaria_trabajo'  ,
-    'tramites.referencias_trabajo'  ,
-    'tramites.direccion_completa_trabajo'  ,
-    'tramites.telefono_contactado'  ,
-    'tramites.telefono_referencia'  ,
-    'tramites.telefono1'  ,
-    'tramites.telefono2'  ,
-    'tramites.telefono3'  ,
-    'tramites.telefono4'  ,
-    'tramites.telefono5'  ,
-    'tramites.telefono6'  ,
-    'tramites.telefono7'  ,
-    'tramites.telefono8'  ,
-    'tramites.telefono9'  ,
-    'tramites.telefono10'  ,
-    'tramites.id_cliente'  ,
-    'tramites.fecha_gestion'  ,
-    'tramites.creadas_no_creadas'  ,
-    'tramites.imputable'  ,
-    'tramites.detalle_imputable'  ,
-    'tramites.fecha_envio_creacion'  ,
-    'tramites.nombre_de_la_base'  ,
-    'tramites.lote'  ,
-    'tramites.codigo_campania'  ,
-    'tramites.ciclo_courier'  ,
-    'tramites.cierre_de_ciclo'  ,
-    'tramites.guia_courier'  ,
-    'tramites.cedula_titular' 
+                            'tramites.nombres'  ,
+                            'tramites.apellidos'  ,
+                            'tramites.nombres_y_apellidos'  ,
+                            'tramites.provincia_domicilio'  ,
+                            'tramites.ciudad_domicilio'  ,
+                            'tramites.parroquia_domicilio'  ,
+                            'tramites.cll_p_domicilio'  ,
+                            'tramites.numeracion_domicilio'  ,
+                            'tramites.call_secundaria_domicilio'  ,
+                            'tramites.referencias_domicilio'  ,
+                            'tramites.direccion_completa_domicilio'  ,
+                            'tramites.provincia_trabajo'  ,
+                            'tramites.ciudad_trabajo'  ,
+                            'tramites.parroquia_trabajo'  ,
+                            'tramites.cll_p_trabajo'  ,
+                            'tramites.numeracion_trabajo'  ,
+                            'tramites.call_secundaria_trabajo'  ,
+                            'tramites.referencias_trabajo'  ,
+                            'tramites.direccion_completa_trabajo'  ,
+                            'tramites.telefono_contactado'  ,
+                            'tramites.telefono_referencia'  ,
+                            'tramites.telefono1'  ,
+                            'tramites.telefono2'  ,
+                            'tramites.telefono3'  ,
+                            'tramites.telefono4'  ,
+                            'tramites.telefono5'  ,
+                            'tramites.telefono6'  ,
+                            'tramites.telefono7'  ,
+                            'tramites.telefono8'  ,
+                            'tramites.telefono9'  ,
+                            'tramites.telefono10'  ,
+                            'tramites.id_cliente'  ,
+                            'tramites.fecha_gestion'  ,
+                            'tramites.creadas_no_creadas'  ,
+                            'tramites.imputable'  ,
+                            'tramites.detalle_imputable'  ,
+                            'tramites.fecha_envio_creacion'  ,
+                            'tramites.nombre_de_la_base'  ,
+                            'tramites.lote'  ,
+                            'tramites.codigo_campania'  ,
+                            'tramites.ciclo_courier'  ,
+                            'tramites.cierre_de_ciclo'  ,
+                            'tramites.guia_courier'  ,
+                            'tramites.cedula_titular' 
                             
                             ,'estados.nombre as estadoNombre', 'sub_estados.nombre as subestadoNombre','subsub_estados.nombre as subsubestadosNombre','users.name as usuario','tramites.fecha_gestion_courier as Tfecha_gestion','users.location as localizacion')
                             //->exclude(['tramites.is_active','tramites.estado_id','tramites.subestado_id', 'tramites.usuario_id', 'tramites.updated_at', 'tramites.created_at'])
                             ->where('tramites.is_active','=',true)
                             ->whereBetween('tramites.fecha_gestion_courier',[$request->fecha1.' 00:00:00',$request->fecha2.' 23:59:59'])
                             ->get();
+*/
+//return $data[0]->estado_id;
+//            return Estados::findOrFail($data[0]->estado_id)->nombre;
+
+//return $data;
+$i=0;
+foreach ($data as $tr) {
+    $data[$i]->estado_id=Estados::findOrFail($tr->estado_id)->nombre;
+    $data[$i]->subestado_id=SubEstados::findOrFail($tr->subestado_id)->nombre; 
+    if($data[$i]->subsubestado_id !=null ||$data[$i]->subsubestado_id!=''){
+        $data[$i]->subsubestado_id=subsubEstado::findOrFail($tr->subsubestado_id)->nombre;   
+    }    
+    $i++;
+}
 
         return Excel::download(new ReporteGestion($data),"Bitacora.xlsx");
     }
 
     public function asignarBase(Request $request)
     {
+        $now = Carbon::now();
         $resultado=explode("\r\n",$request->codigos);
         $codigosActualizados=0;
-        for ($i=0; $i < count($resultado); $i++) {
-            
-            $ucliente['usuario_asignado']=Auth::user()->id; 
-            //$ucliente['usuario_id']=Auth::user()->id; 
-            $ucliente['usuario_id']=null; 
-            
-            
-            $ucliente['estado_id']=$request->estado;
-            $ucliente['subestado_id']=$request->subestado;
-            $ucliente['subsubestado_id']=$request->subsubestado;
-            
-            
-            $ucliente['fecha_gestion_courier']=null;            
-            $ucliente['observaciones']=$request->observaciones; 
-            $ucliente['usuario_asignado']=$request->usuarioGestion;
-            $ucliente['provincia_ruta']=$request->provincia;
-            $ucliente['punto_distribucion']=$request->pdistribucion;
-            
-            $result=Tramites::where('numero_guia','=',$resultado[$i])->update($ucliente);
-            if($result){
-                $codigosActualizados++;
-                app('App\Http\Controllers\HistorialController')->nuevo($resultado[$i]);
+        $userguia= UserGuia::create([
+            'usuario_id'=>$request->usuarioGestion,
+            'fecha'=> $now,
+            'visible'=> '1'          
+        ]);
+       
+        if($userguia){
+
+            for ($i=0; $i < count($resultado); $i++) {
+
+                $ucliente['usuario_id']=Auth::user()->name;                             
+                $ucliente['estado_id']=$request->estado;
+                $ucliente['subestado_id']=$request->subestado;
+                $ucliente['subsubestado_id']=$request->subsubestado;   
+                $ucliente['fecha_gestion_courier']=$now;          
+                $ucliente['observaciones']=$request->observaciones; 
+                $ucliente['usuario_asignado']=$request->usuarioGestion;
+                $ucliente['provincia_ruta']=$request->provincia;
+                $ucliente['punto_distribucion']=$request->pdistribucion;
+                $result=Tramites::where('numero_guia','=',$resultado[$i])->update($ucliente);
+                if($result){
+                    Asignacion::create(['numero_guia'=>$resultado[$i],                                        
+                        'usuario_asignado'=>$request->usuarioGestion,
+                        'usuario_id'=>Auth::user()->name,
+                        'user_guia_id'=>$userguia->id         
+                    ]);
+                    $codigosActualizados++;
+    
+                    app('App\Http\Controllers\HistorialController')->nuevo($resultado[$i]);
+                }
             }
-        } 
-        $message= 'Registros actualizados '.$codigosActualizados ;
-        return redirect()->route('asignarBaseHome')->with('message',$message);        
+            
+        }
+
+            
+        if($codigosActualizados==0){
+            //Asignacion::where('user_guia_id', '=', $$userguia->id)->delete();
+            UserGuia::destroy($userguia->id );
+        }
         
-       // return $request;
+        $message= 'Registros actualizados '.$codigosActualizados ;
+        return redirect()->route('asignarBaseHome')->with('message',$message);             
     }
 
     public function destroy(Tramites $tramites)
     {
         //
+    }
+    public function editTramite($id)
+    {
+    $tramites=Tramites::findOrFail($id);
+    return $tramites;
+    //return $rolhaspermiso;
+    //return view('administracion.Seguridad.editRol',compact('rol','permisos','rolhaspermiso'));
     }
 }

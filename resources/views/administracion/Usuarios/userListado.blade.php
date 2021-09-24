@@ -73,7 +73,8 @@
                       <td>{{$dat->location}}</td>
                       <td>{{$dat->created_at}}</td>
                       <td>
-                        <a href="{{ route('userEdit',$dat)}}"  class="btn btn-sm btn-info"><i class="fas fa-user-lock"></i></a>
+                        <a href="{{ route('userEdit',$dat)}}"  class="btn btn-sm btn-success"><i class="fas fa-user-lock"></i></a>
+                        <a href="{{ route('userEditForm',$dat)}}"  class="btn btn-sm btn-info"><i class="fas fa-pencil"></i></a>
                         <form action="{{ url('/user/'.$dat->id)}}" method="post" class="d-inline" >
                           @csrf
                           {{ method_field('DELETE')}}

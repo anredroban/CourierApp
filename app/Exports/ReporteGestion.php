@@ -13,7 +13,7 @@ class ReporteGestion implements FromCollection,WithHeadings
     public $data;
     public function __construct($data)
     {
-        $this->data=$data['data'];  
+        $this->data=$data;  
     }
     public function headings():array{
         return[
@@ -44,6 +44,7 @@ class ReporteGestion implements FromCollection,WithHeadings
             'Usuario',
             'Fecha Gestion',
             'Ubicación',*/
+            'ID COURIER',
             'Trámites - ID',
             'Trámites - Número guía',
             'Trámites - Número lote',

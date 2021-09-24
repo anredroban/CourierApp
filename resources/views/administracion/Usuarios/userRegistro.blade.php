@@ -142,14 +142,9 @@
                               <button type="submit" class="btn btn-primary">
                                   {{ __('Register') }}
                               </button>
+                              <a href="{{route('gestionUser')}}" class="btn btn-danger">Salir</a>
                           </div>
-                      </div>
-                        
-                        
-                       
-                        
-                                         
-                        
+                      </div>                                                                                                                                                               
                     
                     </form>
                   

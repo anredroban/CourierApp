@@ -70,6 +70,6 @@ class Tramites extends Model
     'tracking',
     'codigo_general',
     'numeroImagenes',
-'campo1','campo2','campo3','campo4','campo5','campo6','campo7','campo8','campo9','campo10' 
+'campo1','campo2','campo3','campo4','campo5','campo6','campo7','campo8','campo9','campo10','nueva_direccion' 
 ];
 }

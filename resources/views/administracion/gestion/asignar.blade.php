@@ -111,7 +111,7 @@
                         <select name="provincia" class="form-control" id="provincia" >  
                           <option value="" selected>SELECCIONE</option>
                           @foreach ($provincias as $provincia)
-                          <option value="{{$provincia->id}}">{{$provincia->provincia}}</option>
+                          <option value="{{$provincia->provincia}}">{{$provincia->provincia}}</option>
                           @endforeach                        
                         </select>                                                
                       </div>
@@ -121,14 +121,15 @@
                       <div class="form-group" >
                         <label>Punto de Distribución</label>
                         <select name="pdistribucion" class="form-control" id="pdistribucion" >                          
-                          <option value="" selected>SELECCIONE</option>
+                          <option value="">SELECCIONE</option>
                           <option value="QUITO">QUITO</option>
                           <option value="GUAYAQUIL">GUAYAQUIL</option>
                           <option value="CUENCA">CUENCA</option>
                           <option value="SANTO DIMINGO">SANTO DIMINGO</option>
-                          <option value="SANTO DIMINGO">TUNGURAHUA</option>
-                          <option value="SANTO DIMINGO">MACHALA</option>
-                        </select>                                                
+                          <option value="TUNGURAHUA">TUNGURAHUA</option>
+                          <option value="MACHALA">MACHALA</option>
+                          <option value="IMBABURA">IMBABURA</option>
+                        </select>                                                 
                       </div>
                     </div>                    
                   </div>
@@ -150,7 +151,7 @@
                         <select name="usuarioGestion" class="form-control" id="usuarioGestion" required>
                           <option value="" selected>SELECCIONE</option>
                           @foreach ($usuarios as $usuario)
-                          <option value="{{$usuario->id}}">{{$usuario->name}}</option>
+                          <option value="{{$usuario->name}}">{{$usuario->name}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -206,7 +207,9 @@
                    emptySelect('subestado');
                    var $select = $('#subestado');
                       $.each(data, function(id, name) {
+                        if(name.id !=17){
                         $select.append('<option value=' + name.id + '>' + name.nombre + '</option>');
+                        }
                       });
                   });
               }
@@ -241,6 +244,7 @@
               }else{
                 $("#Divagendamiento").hide();          
                 $("#Divagendamiento2").hide();
+                
                 $("#fechaAgendamiento").val('');
                 $("#horaAgendamiento").val('');
               }
@@ -269,6 +273,7 @@
                     var $select = $('#subsubestado');
                     emptySelect('subsubestado');
                       $.each(data, function(id, name) {
+                        
                         $select.append('<option value=' + name.id + '>' + name.nombre + '</option>');
                       });
                    }

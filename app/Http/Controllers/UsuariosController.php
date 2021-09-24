@@ -36,19 +36,19 @@ class UsuariosController extends Controller
     {
         $this->validate($request,[
             'name'=>'required|regex:/^[\pL\s\-]+$/u',
-            'user'=>'required|unique:users|string|max:255',
+            'user'=>'required|unique:users|string|max:20|min:3',
             'location'=>'required',
             'rol'=>'required',
-            'ci' => 'required',
-            'password' => 'required|string|min:8|confirmed',
+            'ci' => 'required|max:15|min:10',
+            'password' => 'required|string|min:6|confirmed',
             
          ]);
-         
+         $rol=Rol::select('id')->where('name',$request->rol)->first();
          $usuario=User::create([
              'name'=>$request->name,
              'user'=>$request->user,
              'ci'=>$request->ci,
-             'rol'=>$request->rol,
+             'rol'=>$rol->id,
              'location'=>$request->location,
              
              'is_active'=>true,
@@ -56,7 +56,7 @@ class UsuariosController extends Controller
          ])->assignRole($request->rol);
          
          $message=$usuario ? 'Usuario Creado' : 'No se Puedo crear el usuario';          
-         return redirect()->route('formUser')->with('message',$message);
+         return redirect()->route('gestionUser')->with('message',$message);
     }
 
     public function destroy($id)
@@ -80,5 +80,38 @@ class UsuariosController extends Controller
        // return $request->roles[0];
         $user->roles()->sync($request->roles); 
     return redirect()->route('userEdit',$user)->with('message','Se asigno los roles');
+    }
+
+    public function editUser(User $user)
+    {    
+      return view('administracion.Usuarios.formEdit',compact('user'));
+    }
+    public function updateUser(Request $request, User $user){
+        $this->validate($request,[
+            'name'=>'required|regex:/^[\pL\s\-]+$/u',                   
+            'user'=>'required|string|max:20|min:3',
+            'ci' => 'required|max:15|min:10'                       
+         ]);
+         $user->ci=$request->ci;
+         $user->name=$request->name;
+         $user->user=$request->user;
+        if($request->location!=""){        
+        $user->location=$request->location;
+        }
+        if($request->password!=""){   
+            $this->validate($request,[            
+                'password' => 'required|string|min:6|confirmed'                
+             ]);     
+            $user->password=Hash::make($request->password);
+        }
+
+       if($user->save()){
+                
+        return redirect()->route('userEditForm',$user)->with('message','Se actualizo el usuario');
+        }else{
+            return redirect()->route('userEditForm',$user)->with('message','No se actualizo el usuario');
+     
+        }
+        
     }
 }

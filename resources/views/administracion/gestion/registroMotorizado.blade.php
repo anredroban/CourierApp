@@ -7,7 +7,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">Gestión</h1>
+              <h1 class="m-0">Gestión Motorizado</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -153,7 +153,7 @@
                         <select name="provincia" class="form-control" id="provincia" >  
                           <option value="">SELECCIONE</option>
                           @foreach ($provincias as $provincia)
-                          <option value="{{$provincia->id}}">{{$provincia->provincia}}</option>
+                          <option value="{{$provincia->provincia}}">{{$provincia->provincia}}</option>
                           @endforeach                        
                         </select>                                                
                       </div>

@@ -8,6 +8,7 @@ use App\Models\Estados;
 use App\Models\SubEstados;
 use App\Models\Provincia;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class GestionController extends Controller
 {
@@ -15,8 +16,7 @@ class GestionController extends Controller
     {
         
         $provincias=Provincia::select('id','provincia')->where('is_active','=',true)->get();
-        $estados=Estados::where('is_active','=',true)->get();
-        
+        $estados=Estados::where('is_active','=',true)->get();        
         return view('administracion.gestion.registro',compact('provincias','estados'));
     }
     public function homeMotorizado()
@@ -25,6 +25,14 @@ class GestionController extends Controller
         $infor['estados']=Estados::where('is_active','=',true)->where('id',4)->get();
         return view('administracion.gestion.registroMotorizado',$infor);
     }
+    public function homeBodega()
+    {
+        
+        $provincias=Provincia::select('id','provincia')->where('is_active','=',true)->get();
+        $estados=Estados::where('is_active','=',true)->where('id',2)->get();      
+        return view('administracion.gestion.registroBodega',compact('provincias','estados'));
+    }
+    
 
     public function index()
     {
@@ -33,7 +41,8 @@ class GestionController extends Controller
         ->leftjoin('sub_estados', 'sub_estados.id', '=', 'tramites.subestado_id')
         ->leftjoin('subsub_estados', 'subsub_estados.id', '=', 'tramites.subsubestado_id')
         ->leftjoin('users', 'users.id', '=', 'tramites.usuario_id')
-        ->select('tramites.*','tramites.fecha_gestion_courier as Tfecha_gestion', 'estados.nombre as estadoNombre', 'sub_estados.nombre as subestadoNombre','users.name as usuario','subsub_estados.nombre as subsubestadoNombre')
+        
+        ->select('tramites.*','tramites.fecha_gestion_courier as Tfecha_gestion', 'estados.nombre as estadoNombre', 'sub_estados.nombre as subestadoNombre','users.name as usuario','subsub_estados.nombre as subsubestadoNombre','tramites.usuario_asignado as usuario_asignado_n')
         ->where('tramites.is_active','=',true)
         ->take(1000)
         ->get();
@@ -56,5 +65,21 @@ class GestionController extends Controller
         //return view('administracion.gestion.registroDistribucion', compact('estados','usuarios','provincias'));
         return view('administracion.gestion.registroDistribucion',compact('estados','provincias','subestados','codigoGeneral'));
         //return $codigoGeneral;
+    }
+    public function indexAsignarListado()
+    {       
+        $tramites=DB::table('tramites')           
+            ->where('usuario_asignado','=',Auth::user()->id)            
+            ->get();
+        //return view('administracion.gestion.registroDistribucion', compact('estados','usuarios','provincias'));
+        return view('administracion.gestion.asignarListado',compact('tramites'));
+        //return $tramites;
+    }
+    public function indexVisador()
+    {
+        
+        $provincias=Provincia::select('id','provincia')->where('is_active','=',true)->get();
+        $estados=Estados::where('is_active','=',true)->where('id',5)->get();        
+        return view('administracion.gestion.registroVisador',compact('provincias','estados'));
     }
 }

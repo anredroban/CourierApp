@@ -269,6 +269,7 @@
             </ul>
           </li>-->
 
+          @if (Auth::user()->rol=='1')
           @can('formUser')
           <li class="nav-header">Usuarios</li>
          <!-- <li class="nav-item">-->
@@ -300,45 +301,111 @@
                   </p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('asignarBaseHome')}}" class="nav-link">
+                  <i class="nav-icon fas fa-user-check"></i>
+                  <p>
+                    Asignar                     
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('impresion.index')}}" class="nav-link">              
+                  
+                  <i class="nav-icon fad fa-print"></i>
+                  <p>
+                    Impresion                    
+                  </p>
+                </a>
+              </li>
+              
             
               
               
                                          
           <!--   </ul>
          </li> -->
-          @endcan                 
+          @endcan  
+          @endif
           <li class="nav-header">Gestión</li>
-          @can('registroGestion')
           <li class="nav-item">
-            <a href="{{ route('registroGestion')}}" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-edit"></i>
               <p>
-                Registro General
+                Registros
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-          </li>
-          @endcan
-          @can('indexDistribucion')
-          <li class="nav-item">
-            <a href="{{ route('indexDistribucion')}}" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
-              <p>
-                Arribo Distribución 
-              </p>
-            </a>
-          </li>
-          @endcan
-          @can('registroMotorizado')
-          <li class="nav-item">
-            <a href="{{ route('registroMotorizado')}}" class="nav-link">
-              <i class="nav-icon fal fa-edit"></i>
-              <p>
-                Registro Motorizado
-              </p>
-            </a>
-          </li>
-          @endcan
-          @can('indexHistorico')
+            <ul class="nav nav-treeview">
+              @if (Auth::user()->rol==1)
+             
+              <li class="nav-item">
+                <a href="{{ route('registroGestion')}}" class="nav-link">
+                
+                  <i class="nav-icon fas fa-angle-right"></i>
+                  <p>
+                    Registro General
+                  </p>
+                </a>
+              </li>
+              @endif
+               @if (Auth::user()->rol==2)
+              <li class="nav-item">
+                <a href="{{ route('indexVisador')}}" class="nav-link">
+                  <i class="nav-icon fas fa-angle-right"></i>
+                  <p>
+                    Registro Visador
+                  </p>
+                </a>
+              </li>
+              @endif
+              @if (Auth::user()->rol==1 )
+              <li class="nav-item">
+                <a href="{{ route('indexDistribucion')}}" class="nav-link">
+                  <i class="nav-icon fas fa-angle-right"></i>
+                  <p>
+                    Arribo Distribución 
+                  </p>
+                </a>
+              </li>
+              @endif
+              @if (Auth::user()->rol==1 || Auth::user()->rol==3)
+              <li class="nav-item">
+                <a href="{{ route('registroMotorizado')}}" class="nav-link">
+                  <i class="nav-icon fas fa-angle-right"></i>
+                  <p>
+                    Registro Motorizado
+                  </p>
+                </a>
+              </li>
+              @endif
+              
+              @if (Auth::user()->rol==1 || Auth::user()->rol==4 )
+              <li class="nav-item">
+                <a href="{{ route('bodega.index')}}" class="nav-link">
+                  <i class="nav-icon fas fa-angle-right"></i>
+                  <p>
+                    Registro Bodega
+                  </p>
+                </a>
+              </li>
+              @endif
+
+              
+            </ul>
+          </li>  
+
+
+          
+         
+         
+         
+          
+          
+
+          
+        
+          @if (Auth::user()->rol==1 || Auth::user()->rol==2 || Auth::user()->rol==3 || Auth::user()->rol==4 )
           <li class="nav-item">
             <a href="{{ route('indexHistorico')}}" class="nav-link">
               <i class="nav-icon fas fa-history"></i>
@@ -347,7 +414,8 @@
               </p>
             </a>
           </li>
-          @endcan
+          @endif
+          @if (Auth::user()->rol==1 || Auth::user()->rol==3 )
           <li class="nav-item">
             <a href="{{ route('indexImagenes')}}" class="nav-link">              
               <i class="nav-icon far fa-image"></i>
@@ -356,35 +424,29 @@
               </p>
             </a>
           </li>
-          @can('vistaReporte')
-          <li class="nav-header">Reportes</li>
-          
-          <li class="nav-item">
-            <a href="{{ route('vistaReporte')}}" class="nav-link">
-              <i class="nav-icon far fa-file-excel"></i>
-              <p>
-                Reporte de Gestión
-              </p>
-            </a>
-          </li>
+          @endif
+         
+
 
           
+          @if (Auth::user()->rol==1 )
+            <li class="nav-header">Reportes</li>
           
-          <li class="nav-item">
-            <a href="{{ route('asignarBaseHome')}}" class="nav-link">
-              <i class="nav-icon fad fa-user-minus"></i>
-              <p>
-                AsignarBase                    
-              </p>
-            </a>
-          </li>
+            <li class="nav-item">
+              <a href="{{ route('vistaReporte')}}" class="nav-link">
+                <i class="nav-icon far fa-file-excel"></i>
+                <p>
+                  Reporte de Gestión
+                </p>
+              </a>
+            </li>                            
           
-          @endcan
+          @endif
 
           
           <li class="nav-header">Información</li>      
           
-            @can('dbCarga')
+            @if (Auth::user()->rol==1 )
               <li class="nav-item">
                 <a href="{{ route('dbCarga')}}" class="nav-link">
                   <i class="nav-icon fad fa-database"></i>
@@ -393,10 +455,18 @@
                   </p>
                 </a>
               </li>
-            @endcan
+            @endif
               
-              
-              
+            
+            <li class="nav-item">
+              <a href="{{ route('asignado.index')}}" class="nav-link">
+                <i class="nav-icon far fa-list"></i>
+                <p>
+                  Registros Asignados
+                </p>
+              </a>
+            </li>   
+            @if (Auth::user()->rol==1 || Auth::user()->rol==2  )
               <li class="nav-item">
                 <a href="{{ route('listadoCodigos')}}" class="nav-link">
                   <i class="nav-icon far fa-list"></i>
@@ -404,7 +474,8 @@
                     Todos los Registros
                   </p>
                 </a>
-              </li>                                              
+              </li>     
+            @endif                                     
           
           <!--<li class="nav-item">
             <a href="{{ route('registroGestion')}}" class="nav-link">
@@ -1032,7 +1103,7 @@
     <strong>Copyright &copy; 2021 <a href="https://plus-wireless.com">Plus Wireless</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 1.4.0 DC
+      <b>Version</b> 1.6.0 DC
     </div>
   </footer>
 

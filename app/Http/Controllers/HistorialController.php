@@ -120,55 +120,67 @@ class HistorialController extends Controller
                     ->where('historials.is_active','=',true)
                     ->where('numero_guia',$request->guia)
                     //->whereBetween('tramites.fecha_gestion_courier',[$request->fecha1.' 00:00:00',$request->fecha2.' 23:59:59'])
-                    ->get();
+                    ->orderBy('id','desc')->get();
         
         //Historial::where('numero_guia',$request->guia)->get();
         
 
         $output = '<div class="row">';
-        $output .='<table class="table">';
+        $output .='<table class="table table-responsive">';
         $output .= '<thead class="thead-dark">
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Numero Guia</th>
-                        <th scope="col">Tramite ID</th>
-                        <th scope="col">Fecha Gestion</th>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Historial ID</th>
+        <th scope="col">Numero Guia</th>
+        <th scope="col">Tramite ID</th>
+        <th scope="col">Fecha Gestion</th>
 
-                        <th scope="col">Estado</th>
-                        <th scope="col">Subestad</th>
-                        <th scope="col">Sub Subestado</th>
-                        <th scope="col">Usuario </th>
-                        <th scope="col">Observacion </th>
-                        </tr>
-                    </thead>';
- 
-            foreach($historials as $historial)
-            {
-            $output .= '<tr>
-                            <th scope="row">' . $historial->id.'</th>
-                            <td>' . $historial->numero_guia.'</td>
-                            <td>' . $historial->tramite_id.'</td>
-                            <td>' . $historial->Tfecha_gestion.'</td>
+        <th scope="col">Estado</th>
+        <th scope="col">Subestad</th>
+        <th scope="col">Sub Subestado</th>
+        <th scope="col">Usuario </th>
+        <th scope="col">Inventario </th>
+        <th scope="col">Agendamiento </th>
+        <th scope="col">Provincia Ruta </th>
+        <th scope="col">Punto Distribucion</th>
+        <th scope="col">Observacion </th>
+        </tr>
+    </thead>';
+$i=1;
+foreach($historials as $historial)
+{
+$output .= '<tr>
+            <th scope="row">' . $i++.'</th>
+            <th >' . $historial->id.'</th>
+            <td>' . $historial->numero_guia.'</td>
+            <td>' . $historial->tramite_id.'</td>
+            <td>' . $historial->Tfecha_gestion.'</td>
 
-                            <td>' . $historial->estadoNombre.'</td>
-                            <td>' . $historial->subestadoNombre.'</td>
-                            <td>' . $historial->subsub_estadosNombre.'</td>
-                            <td>' . $historial->usuario.'</td>
-                            <td>' . $historial->observaciones.'</td>                                                        
-                        </tr>';
-
-            /* <div class="col-md-2 imgRemove"  id="imgRmv" style="margin-bottom:16px;" align="center">
-                    <img src="'.asset('imagenes/'.$request->ruta.'/' . $image->getFilename()).'" class="img-thumbnail" width="175" height="175" style="height:175px;" />
-                    <a href="'.asset('imagenes/'.$request->ruta.'/' . $image->getFilename()).'" download class="btn btn-sm btn-info"><i class="fa fa-download"></i> </a>
-                    <a href="'.asset('imagenes/'.$request->ruta.'/' . $image->getFilename()).'"  class="btn btn-sm btn-info" target="_blank" ><i class="fa fa-picture">Ver</i> </a>
-                    
-                    <!--<button type="button" class="btn btn-link remove_image" id="'.$image->getFilename().'">eliminar</button>-->
-                </div>
-            ';*/
-            } 
+            <td>' . $historial->estadoNombre.'</td>
+            <td>' . $historial->subestadoNombre.'</td>
+            <td>' . $historial->subsub_estadosNombre.'</td>
+            <td>' . $historial->usuario_id.'</td>
             
-        $output .= '</table';
-        $output .= '</div>';
+            <td>' .$historial->inventario.'</th>
+<td>' .$historial->agendamiento.'</th>
+<td>' .$historial->provincia_ruta.'</th>
+<td>' .$historial->punto_distribucion.'</th>
+
+            <td>' . $historial->observaciones.'</td>                                                        
+        </tr>';
+
+/* <div class="col-md-2 imgRemove"  id="imgRmv" style="margin-bottom:16px;" align="center">
+    <img src="'.asset('imagenes/'.$request->ruta.'/' . $image->getFilename()).'" class="img-thumbnail" width="175" height="175" style="height:175px;" />
+    <a href="'.asset('imagenes/'.$request->ruta.'/' . $image->getFilename()).'" download class="btn btn-sm btn-info"><i class="fa fa-download"></i> </a>
+    <a href="'.asset('imagenes/'.$request->ruta.'/' . $image->getFilename()).'"  class="btn btn-sm btn-info" target="_blank" ><i class="fa fa-picture">Ver</i> </a>
+    
+    <!--<button type="button" class="btn btn-link remove_image" id="'.$image->getFilename().'">eliminar</button>-->
+</div>
+';*/
+} 
+
+$output .= '</table';
+$output .= '</div>';
 
         
         echo $output;

@@ -55,8 +55,8 @@ class RolController extends Controller
     {
     //return $request;
     //$rol->permissions()->sync($request->perm);
-    return $rol->permissions()->sync($request->permisos);
+    $rol->permissions()->sync($request->permisos);
     //$user->roles()->sync($request->roles); 
-   //return redirect()->route('rolEdit',$rol)->with('message','Se cambio los Permisos');
+   return redirect()->route('rolEdit',$rol)->with('message','Se cambio los Permisos');
     }
 }
